@@ -1,5 +1,7 @@
 #include "DataPublicationServer.h"
 
+#include <vector>
+
 DataPublicationError DataPublicationServer::AddDataList(const std::string &strPublisher, const std::string &strDlName) noexcept
 {
     auto it = m_dlData.find(strDlName);
@@ -24,7 +26,7 @@ DataPublicationError DataPublicationServer::AddDataList(const std::string &strPu
     }
 
     Info& info = (retInfo.first)->second;
-    info._lstPublishers.push_back(strPublisher);
+    info._setPublishers.insert(strPublisher);
 
     return DataPublicationError::Success;
 }
@@ -84,6 +86,64 @@ DataPublicationError DataPublicationServer::RemoveDataFromList(const std::string
     }
 
     dataMap.erase(itData);
+
+    return DataPublicationError::Success;
+}
+
+DataPublicationError DataPublicationServer::Subscribe(const std::string &strSubscriber, const std::string &strDlName) noexcept
+{
+    auto it = m_dlInfo.find(strDlName);
+    if(it == m_dlInfo.end())
+    {
+        return DataPublicationError::NotFound;
+    }
+
+    Info& info = it->second;
+    auto ret = info._setSubscribers.insert(strSubscriber);
+
+    if(!ret.second)
+    {
+        return DataPublicationError::AlreadyExists;
+    }
+
+    return DataPublicationError::Success;
+}
+
+DataPublicationError DataPublicationServer::Unsubscribe(const std::string &strSubscriber, const std::string &strDlName) noexcept
+{
+    auto it = m_dlInfo.find(strDlName);
+    if(it == m_dlInfo.end())
+    {
+        return DataPublicationError::NotFound;
+    }
+
+    Info& info = it->second;
+
+    size_t ret = info._setSubscribers.erase(strSubscriber);
+    if(!ret)
+    {
+        return DataPublicationError::NotFound;
+    }
+
+    return DataPublicationError::Success;
+}
+
+DataPublicationError DataPublicationServer::GetPublication(const std::string &strSubscriber, std::map<std::string, std::map<std::string, VarType>> &publication) noexcept
+{
+    std::vector<std::string> vecSubscriptions;
+
+    for(const std::pair<std::string, Info>& info : m_dlInfo)
+    {
+        if(info.second._setSubscribers.contains(strSubscriber))
+        {
+            vecSubscriptions.push_back(info.first);
+        }
+    }
+
+    for(const std::string& dlName: vecSubscriptions)
+    {
+        publication.emplace(std::make_pair(dlName, std::map<std::string, VarType>(m_dlData.at(dlName))));
+    }
 
     return DataPublicationError::Success;
 }

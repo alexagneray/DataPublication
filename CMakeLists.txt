@@ -10,10 +10,13 @@ endif()
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Boost REQUIRED COMPONENTS unit_test_framework)
+find_package(Boost REQUIRED COMPONENTS unit_test_framework json)
 
 
 add_library(DataPublicationCore server/DataPublicationServer.cpp)
+target_include_directories(DataPublicationCore PRIVATE ${Boost_INCLUDE_DIRS})
+target_compile_definitions(DataPublicationCore PRIVATE "BOOST_TEST_DYN_LINK=1")
+target_link_libraries(DataPublicationCore Boost::json)
 
 # Tests Unitaires
 add_executable(test_publication_server server/test/test_publication_server.cpp)
