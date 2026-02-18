@@ -13,7 +13,7 @@ enum class DataPublicationError
     NotFound
 };
 
-class DataPublicationServer
+class DataPublicationCore
 {
     public:
     using VarType = std::variant<std::string, double, long, bool>;
@@ -35,9 +35,10 @@ class DataPublicationServer
     DataPublicationError AddDataToList(const std::string& strDlName, const std::string& strDataName, const VarType& data) noexcept;
     DataPublicationError RemoveDataFromList(const std::string& strDlName, const std::string& strDataName) noexcept;
 
+    DataPublicationError UpdateData(const std::string& strDlName, const std::string& strDataName, const VarType& data) noexcept;
     DataPublicationError Subscribe(const std::string& strSubscriber, const std::string& strDlName) noexcept;
     DataPublicationError Unsubscribe(const std::string& strSubscriber, const std::string& strDlName) noexcept;
 
     DataPublicationError GetPublication(const std::string& strSubscriber, std::map<std::string,std::map<std::string, VarType>>& publication) noexcept;
-    
+
 };

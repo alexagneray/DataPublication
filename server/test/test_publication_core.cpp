@@ -4,11 +4,11 @@
 // #define BOOST_TEST_SHOW_PROGRESS yes
 #include <boost/test/unit_test.hpp>
 
-#include <DataPublicationServer.h>
+#include <DataPublicationCore.h>
 
 BOOST_AUTO_TEST_CASE(test_data_list)
 {
-    DataPublicationServer server;
+    DataPublicationCore server;
     DataPublicationError err;
     err = server.AddDataList("Alex","Liste1");
     BOOST_TEST_INFO("Insertion de Liste1.");
@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE(test_data_list)
 
 BOOST_AUTO_TEST_CASE(test_publish_data)
 {
-    DataPublicationServer server;
+    DataPublicationCore server;
     DataPublicationError err;
 
     err = server.AddDataList("Alex","Liste1");
@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE(test_publish_data)
 
 BOOST_AUTO_TEST_CASE(test_subscriber)
 {
-    DataPublicationServer server;
+    DataPublicationCore server;
     DataPublicationError err;
 
     err = server.AddDataList("Alex","Liste1");
@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE(test_subscriber)
     BOOST_TEST_INFO("Deuxieme inscription d'Olivier à Liste2 (inexistante).");
     BOOST_CHECK(err == DataPublicationError::NotFound);
 
-    std::map<std::string, std::map<std::string, DataPublicationServer::VarType>> publication; 
+    std::map<std::string, std::map<std::string, DataPublicationCore::VarType>> publication; 
     err = server.GetPublication("Olivier",publication);
     BOOST_TEST_INFO("Récupération de la publication d'Olivier.");
     BOOST_CHECK(err == DataPublicationError::Success);
@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_CASE(test_subscriber)
     BOOST_TEST_INFO("Vérification présence de Liste1");
     BOOST_CHECK(itPublication != publication.end());
 
-    std::map<std::string, DataPublicationServer::VarType>& data = itPublication->second;
+    std::map<std::string, DataPublicationCore::VarType>& data = itPublication->second;
     auto itData = data.find("Pi");
     BOOST_TEST_INFO("Vérification présence de Pi dans Liste1");
     BOOST_CHECK(itData != data.end());

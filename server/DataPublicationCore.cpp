@@ -1,8 +1,8 @@
-#include "DataPublicationServer.h"
+#include "DataPublicationCore.h"
 
 #include <vector>
 
-DataPublicationError DataPublicationServer::AddDataList(const std::string &strPublisher, const std::string &strDlName) noexcept
+DataPublicationError DataPublicationCore::AddDataList(const std::string &strPublisher, const std::string &strDlName) noexcept
 {
     auto it = m_dlData.find(strDlName);
     
@@ -31,7 +31,7 @@ DataPublicationError DataPublicationServer::AddDataList(const std::string &strPu
     return DataPublicationError::Success;
 }
 
-DataPublicationError DataPublicationServer::RemoveDataList(const std::string &strDlName) noexcept
+DataPublicationError DataPublicationCore::RemoveDataList(const std::string &strDlName) noexcept
 {
     auto it = m_dlData.find(strDlName);
 
@@ -45,7 +45,7 @@ DataPublicationError DataPublicationServer::RemoveDataList(const std::string &st
     return DataPublicationError::Success;
 }
 
-DataPublicationError DataPublicationServer::AddDataToList(const std::string &strDlName, const std::string &strDataName, const VarType &data) noexcept
+DataPublicationError DataPublicationCore::AddDataToList(const std::string &strDlName, const std::string &strDataName, const VarType &data) noexcept
 {
     auto it = m_dlData.find(strDlName);
     if(it == m_dlData.end())
@@ -69,7 +69,7 @@ DataPublicationError DataPublicationServer::AddDataToList(const std::string &str
     return DataPublicationError::Success;
 }
 
-DataPublicationError DataPublicationServer::RemoveDataFromList(const std::string &strDlName, const std::string &strDataName) noexcept
+DataPublicationError DataPublicationCore::RemoveDataFromList(const std::string &strDlName, const std::string &strDataName) noexcept
 {
     auto it = m_dlData.find(strDlName);
     if(it == m_dlData.end())
@@ -90,7 +90,20 @@ DataPublicationError DataPublicationServer::RemoveDataFromList(const std::string
     return DataPublicationError::Success;
 }
 
-DataPublicationError DataPublicationServer::Subscribe(const std::string &strSubscriber, const std::string &strDlName) noexcept
+DataPublicationError DataPublicationCore::UpdateData(const std::string &strDlName, const std::string &strDataName, const VarType &data) noexcept
+{
+    auto it = m_dlData.find(strDlName);
+    if(it == m_dlData.end())
+    {
+        return DataPublicationError::NotFound;
+    }
+
+    
+
+    return DataPublicationError::Success;
+}
+
+DataPublicationError DataPublicationCore::Subscribe(const std::string &strSubscriber, const std::string &strDlName) noexcept
 {
     auto it = m_dlInfo.find(strDlName);
     if(it == m_dlInfo.end())
@@ -109,7 +122,7 @@ DataPublicationError DataPublicationServer::Subscribe(const std::string &strSubs
     return DataPublicationError::Success;
 }
 
-DataPublicationError DataPublicationServer::Unsubscribe(const std::string &strSubscriber, const std::string &strDlName) noexcept
+DataPublicationError DataPublicationCore::Unsubscribe(const std::string &strSubscriber, const std::string &strDlName) noexcept
 {
     auto it = m_dlInfo.find(strDlName);
     if(it == m_dlInfo.end())
@@ -128,7 +141,7 @@ DataPublicationError DataPublicationServer::Unsubscribe(const std::string &strSu
     return DataPublicationError::Success;
 }
 
-DataPublicationError DataPublicationServer::GetPublication(const std::string &strSubscriber, std::map<std::string, std::map<std::string, VarType>> &publication) noexcept
+DataPublicationError DataPublicationCore::GetPublication(const std::string &strSubscriber, std::map<std::string, std::map<std::string, VarType>> &publication) noexcept
 {
     std::vector<std::string> vecSubscriptions;
 
