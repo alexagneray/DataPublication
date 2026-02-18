@@ -35,7 +35,7 @@ class DataPublicationCore
     DataPublicationError AddDataToList(const std::string& strDlName, const std::string& strDataName, const VarType& data) noexcept;
     DataPublicationError RemoveDataFromList(const std::string& strDlName, const std::string& strDataName) noexcept;
 
-    DataPublicationError UpdateData(const std::string& strDlName, const std::string& strDataName, const VarType& data) noexcept;
+    DataPublicationError UpdateData(const std::string& strDlName, const std::string& strDataName, const VarType& newData) noexcept;
     DataPublicationError Subscribe(const std::string& strSubscriber, const std::string& strDlName) noexcept;
     DataPublicationError Unsubscribe(const std::string& strSubscriber, const std::string& strDlName) noexcept;
 

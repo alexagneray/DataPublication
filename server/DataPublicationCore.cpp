@@ -90,7 +90,7 @@ DataPublicationError DataPublicationCore::RemoveDataFromList(const std::string &
     return DataPublicationError::Success;
 }
 
-DataPublicationError DataPublicationCore::UpdateData(const std::string &strDlName, const std::string &strDataName, const VarType &data) noexcept
+DataPublicationError DataPublicationCore::UpdateData(const std::string &strDlName, const std::string &strDataName, const VarType &newData) noexcept
 {
     auto it = m_dlData.find(strDlName);
     if(it == m_dlData.end())
@@ -98,7 +98,15 @@ DataPublicationError DataPublicationCore::UpdateData(const std::string &strDlNam
         return DataPublicationError::NotFound;
     }
 
-    
+    std::map<std::string, VarType>& mapData = it->second;
+    auto itData = mapData.find(strDataName);
+    if(itData == mapData.end())
+    {
+        return DataPublicationError::NotFound;
+    }
+
+    VarType& data = itData->second;
+    data = newData;
 
     return DataPublicationError::Success;
 }
