@@ -1,9 +1,13 @@
 #include "UserInfoParser.h"
 #include <list>
 #include <string>
-#include <boost/json.hpp>
-#include <boost/uuid/uuid.hpp>
 
+enum class DataPublicationManagerError
+{
+    Success,
+    AlreadyExists,
+    NotFound
+};
 
 /**
  * Gestion de l'authentification des utilisateurs. 
@@ -22,5 +26,8 @@ private:
 public:
     bool LoadUserInfoFile();
     bool SaveUserInfoFile() const;
+    DataPublicationManagerError AddUser(const std::string& name, const std::string& passwd) noexcept;
+    DataPublicationManagerError RemoveUser(const std::string& name) noexcept;
+    DataPublicationManagerError UpdatePassword(const std::string& name, const std::string& passwd) noexcept;
     void Run() noexcept;
 };

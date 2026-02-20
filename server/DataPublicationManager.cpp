@@ -59,7 +59,53 @@ bool DataPublicationManager::SaveUserInfoFile() const
     return true;
 }
 
+DataPublicationManagerError DataPublicationManager::AddUser(const std::string &name, const std::string &passwd) noexcept
+{
+    auto it = std::find_if(m_lstUserInfo.begin(),
+                m_lstUserInfo.end(),
+                [&name](UserInfo& info) {return info._name==name;});
+    if(it != m_lstUserInfo.end())
+    {
+        return DataPublicationManagerError::AlreadyExists;
+    }
 
+    UserInfo& newUser = m_lstUserInfo.emplace_back();
+    newUser._name = name;
+    newUser._passwd = passwd;
+    
+    
+    return DataPublicationManagerError::Success;
+}
+
+DataPublicationManagerError DataPublicationManager::RemoveUser(const std::string &name) noexcept
+{
+    auto it = std::find_if(m_lstUserInfo.begin(),
+                m_lstUserInfo.end(),
+                [&name](UserInfo& info) {return info._name==name;});
+    if(it == m_lstUserInfo.end())
+    {
+        return DataPublicationManagerError::NotFound;
+    }
+
+    m_lstUserInfo.erase(it);
+
+    return DataPublicationManagerError::Success;
+}
+
+DataPublicationManagerError DataPublicationManager::UpdatePassword(const std::string &name, const std::string &passwd) noexcept
+{
+    auto it = std::find_if(m_lstUserInfo.begin(),
+                m_lstUserInfo.end(),
+                [&name](UserInfo& info) {return info._name==name;});
+    if(it == m_lstUserInfo.end())
+    {
+        return DataPublicationManagerError::NotFound;
+    }
+
+    it->_passwd = passwd;
+    
+    return DataPublicationManagerError::Success;
+}
 
 void DataPublicationManager::Run() noexcept
 {
