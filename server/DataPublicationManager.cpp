@@ -5,9 +5,6 @@
 
 bool DataPublicationManager::LoadUserInfoFile()
 {
-    /**
-     * TODO : chargement du fichier json pour update m_lstUserInfo
-     */
     std::ifstream ifs;
     ifs.open("_userinfo.json");
 
@@ -20,6 +17,9 @@ bool DataPublicationManager::LoadUserInfoFile()
     
     std::stringstream ss;
     ss << ifs.rdbuf();
+
+    ifs.close();
+
     std::string strFileContent = ss.str();
 
     try
@@ -31,16 +31,32 @@ bool DataPublicationManager::LoadUserInfoFile()
         return false;
     }
 
+    UserInfoParser parser;
+    parser.ConvertJsonArrayToUserInfo(arrUserInfo, m_lstUserInfo);
+
 
     return true;
 }
 
 bool DataPublicationManager::SaveUserInfoFile() const
 {
-    /**
-     * TODO : enregistrement de m_lstUserInfo dans un fichier json
-     */
-    return false;
+    boost::json::array arr;
+    UserInfoParser parser;
+    parser.ConvertUserInfoToJsonArray(m_lstUserInfo, arr);
+
+    std::ofstream ofs;
+    ofs.open("_userinfo.json");
+
+    if(ofs.fail())
+    {
+        return false;
+    }
+
+    std::string strUserInfo = boost::json::serialize(arr);
+    ofs << strUserInfo;
+    ofs.close();
+
+    return true;
 }
 
 

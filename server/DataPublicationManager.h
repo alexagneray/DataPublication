@@ -16,10 +16,11 @@ public:
 
 private:
     std::list<UserInfo> m_lstUserInfo;
-    bool LoadUserInfoFile();
-    bool SaveUserInfoFile() const;
+
 
     
 public:
+    bool LoadUserInfoFile();
+    bool SaveUserInfoFile() const;
     void Run() noexcept;
 };
