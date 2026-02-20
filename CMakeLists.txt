@@ -23,7 +23,7 @@ target_include_directories(DataPublicationCore PRIVATE ${Boost_INCLUDE_DIRS})
 target_compile_definitions(DataPublicationCore PRIVATE "BOOST_TEST_DYN_LINK=1")
 target_link_libraries(DataPublicationCore)
 
-add_library(DataPublicationManager SHARED server/DataPublicationManager.cpp server/UserInfoParser.cpp)
+add_library(DataPublicationManager SHARED server/DataPublicationManager.cpp server/UserInfoParser.cpp server/AESEncoder.cpp)
 target_include_directories(DataPublicationCore PRIVATE ${Boost_INCLUDE_DIRS})
 target_compile_definitions(DataPublicationCore PRIVATE "BOOST_TEST_DYN_LINK=1")
 target_link_libraries(DataPublicationCore Boost::json)
