@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     g++ \
     libboost-all-dev \
+    libcrypto++-dev \
     cmake \
     git \
     gdb \
@@ -16,6 +17,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     file \
     && rm -rf /var/lib/apt/lists/*
+RUN 
 
 # RUN useradd -m devuser && \
 # usermod -aG sudo devuser && \
