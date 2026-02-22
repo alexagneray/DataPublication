@@ -39,6 +39,14 @@ void AESEncoder::SetIv(const CryptoPP::SecByteBlock &iv)
 {
      m_iv = iv;
 }
+const CryptoPP::SecByteBlock AESEncoder::GetKey() const
+{
+    return m_key;
+}
+const CryptoPP::SecByteBlock AESEncoder::GetIv() const
+{
+    return m_iv;
+}
 void AESEncoder::Encode(const std::string &strPlainText, std::string &strEncoded)
 {
     if(m_key.empty() || m_iv.empty())
