@@ -11,7 +11,8 @@ public:
     AESEncoder(const CryptoPP::SecByteBlock& key, const CryptoPP::SecByteBlock& iv);
     void RegenKey();
     void RegenIv();
-    void SetKey(const CryptoPP::SecByteBlock& key, const CryptoPP::SecByteBlock& iv);
+    void SetKey(const CryptoPP::SecByteBlock& key);
+    void SetIv(const CryptoPP::SecByteBlock& iv);
     void Encode(const std::string& strPlainText, std::string& strEncoded);
     void Decode(const std::string& strEncoded, std::string& strPlainText);
 };

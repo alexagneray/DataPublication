@@ -30,10 +30,14 @@ void AESEncoder::RegenIv()
     m_iv.CleanNew(AES::BLOCKSIZE);
     prng.GenerateBlock(m_iv, m_iv.size());
 }
-void AESEncoder::SetKey(const CryptoPP::SecByteBlock &key, const CryptoPP::SecByteBlock &iv)
+void AESEncoder::SetKey(const CryptoPP::SecByteBlock &key)
 {
     m_key = key;
-    m_iv = iv;
+
+}
+void AESEncoder::SetIv(const CryptoPP::SecByteBlock &iv)
+{
+     m_iv = iv;
 }
 void AESEncoder::Encode(const std::string &strPlainText, std::string &strEncoded)
 {
