@@ -24,6 +24,7 @@ public:
 private:
     static const std::string UserInfoFilename;
     static const std::string KeyFilename;
+    static const std::string IvFilename;
 
     std::list<UserInfo> m_lstUserInfo;
     std::mutex m_mutUserInfo;

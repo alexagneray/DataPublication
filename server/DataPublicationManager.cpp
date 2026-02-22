@@ -9,6 +9,7 @@
 
 const std::string DataPublicationManager::UserInfoFilename = "userinfo.dpmbin";
 const std::string DataPublicationManager::KeyFilename = "key.dpmbin";
+const std::string DataPublicationManager::IvFilename = "iv.dpmbin";
 
 bool DataPublicationManager::LoadUserInfoFile()
 {
@@ -66,30 +67,59 @@ bool DataPublicationManager::SaveUserInfoFile()
     std::string strUserInfo = boost::json::serialize(arr);
 
     AESEncoder encoder;
+    std::string strEncoded;
     std::ifstream ifs(KeyFilename);
-    if(!ifs.fail())
+
+    if(ifs.fail())
+    {
+        encoder.RegenKey();
+        const CryptoPP::SecByteBlock& key = encoder.GetKey();
+        std::ofstream ofsKey(KeyFilename);
+        if(ofsKey.fail())
+        {
+            return false;
+        }
+        ofsKey.write(reinterpret_cast<const char*>(key.BytePtr()), key.SizeInBytes());
+        if(ofsKey.fail())
+        {
+            return false;
+        }
+    }
+    else
     {
         CryptoPP::SecByteBlock key(CryptoPP::AES::DEFAULT_KEYLENGTH);
-        CryptoPP::SecByteBlock iv(CryptoPP::AES::BLOCKSIZE);
-
-        std::basic_string_view<CryptoPP::byte> strKey(key.BytePtr(),key.SizeInBytes());
-        std::basic_string_view<CryptoPP::byte> strIv(iv.BytePtr(),iv.SizeInBytes());
-
-        /**
-         * TODO : implémenter le chargement d'un fichier de clé d'encodage et fichier userinfo encodé
-         */
-
-        // std::basic_string<unsigned char> strKey;
-        // std::string strIv;
-        ifs >> strKey >> strIv;
-        // key.Assign(reinterpret_cast<const CryptoPP::byte*>(strKey.c_str()), strKey.length());
-
-        // encoder.SetKey()
+        std::string strKey;
+        ifs >> strKey;
+        if(ifs.fail())
+        {
+            return false;
+        }
+        if(strKey.size() != CryptoPP::AES::DEFAULT_KEYLENGTH)
+        {
+            return false;
+        }
+        memcpy(key.BytePtr(), strKey.c_str(), CryptoPP::AES::DEFAULT_KEYLENGTH);
+        encoder.SetKey(key);
     }
-    
-    
-    ofs << strUserInfo;
-    ofs.close();
+
+    encoder.RegenIv();
+    encoder.Encode(strUserInfo, strEncoded);
+    ofs << strEncoded;
+
+    const CryptoPP::SecByteBlock& iv = encoder.GetIv();
+    std::ofstream ofsIv(IvFilename);
+
+    if(ofsIv.fail())
+    {
+        return false;
+    }
+
+    ofsIv.write(reinterpret_cast<const char*>(iv.BytePtr()), iv.SizeInBytes());
+
+    if(ofsIv.fail())
+    {
+        return false;
+    }
 
     return true;
 }
