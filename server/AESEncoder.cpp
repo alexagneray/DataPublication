@@ -22,8 +22,12 @@ void AESEncoder::RegenKey()
 {
     AutoSeededRandomPool prng;
     m_key.CleanNew(AES::DEFAULT_KEYLENGTH);
-    m_iv.CleanNew(AES::BLOCKSIZE);
     prng.GenerateBlock(m_key, m_key.size());
+}
+void AESEncoder::RegenIv()
+{
+    AutoSeededRandomPool prng;
+    m_iv.CleanNew(AES::BLOCKSIZE);
     prng.GenerateBlock(m_iv, m_iv.size());
 }
 void AESEncoder::SetKey(const CryptoPP::SecByteBlock &key, const CryptoPP::SecByteBlock &iv)
