@@ -10,15 +10,25 @@
 
 BOOST_AUTO_TEST_CASE(test_userinfo_load_save)
 {
-    std::ofstream ofs("_userinfo.json");
-    ofs << FILE_CONTENT;
-    ofs.close();
 
     DataPublicationManager mgr; 
-    bool ret = mgr.LoadUserInfoFile();
+
+    mgr.AddUser("Alex", "Alex1234");
+    mgr.AddUser("Olivier", "Olivier1234");
+
+    bool ret = mgr.SaveUserInfoFile();
+    BOOST_TEST_INFO("Sauvegarde du fichier _userinfo");
+    BOOST_CHECK(ret);
+
+    ret = mgr.LoadUserInfoFile();
     BOOST_TEST_INFO("Chargement du fichier _userinfo");
     BOOST_CHECK(ret);
+
     ret = mgr.SaveUserInfoFile();
-    BOOST_TEST_INFO("Sauvegarde du fichier _userinfo");
+    BOOST_TEST_INFO("(2) Sauvegarde du fichier _userinfo");
+    BOOST_CHECK(ret);
+
+    ret = mgr.LoadUserInfoFile();
+    BOOST_TEST_INFO("(2) Chargement du fichier _userinfo");
     BOOST_CHECK(ret);
 }

@@ -13,35 +13,79 @@ const std::string DataPublicationManager::IvFilename = "iv.dpmbin";
 
 bool DataPublicationManager::LoadUserInfoFile()
 {
+
+    // 1 - Chargement contenu userinfo
     std::ifstream ifs;
     ifs.open("_userinfo.json");
-
     if(ifs.fail())
     {
         return false;
     }
 
-    boost::json::array arrUserInfo;
-    
     std::stringstream ss;
     ss << ifs.rdbuf();
-
     ifs.close();
-
     std::string strFileContent = ss.str();
+    ss.str("");
+    ss.clear();
 
+    // 2 - Chargement IV
+    ifs.open(IvFilename);
+    if(ifs.fail())
+    {
+        return false;
+    }
+
+    ss << ifs.rdbuf();
+    ifs.close();
+    std::string strIvFileContent = ss.str();
+    ss.str("");
+    ss.clear();
+    
+    // 3 - Chargement clé
+    ifs.open(KeyFilename);
+    if(ifs.fail())
+    {
+        return false;
+    }
+    ss << ifs.rdbuf();
+    ifs.close();
+    std::string strKeyFileContent = ss.str();
+    ss.str("");
+    ss.clear();
+
+    // 4 - Conversion IV
+    CryptoPP::SecByteBlock iv(CryptoPP::AES::BLOCKSIZE);
+    memcpy(iv.BytePtr(), strIvFileContent.c_str(), CryptoPP::AES::BLOCKSIZE);
+
+    // 5 - Conversion key
+    CryptoPP::SecByteBlock key(CryptoPP::AES::DEFAULT_KEYLENGTH);
+    memcpy(key.BytePtr(), strKeyFileContent.c_str(), CryptoPP::AES::DEFAULT_KEYLENGTH);
+
+    // 6 - Décodage contenu du fichier userfile
+    AESEncoder encoder;
+    encoder.SetIv(iv);
+    encoder.SetKey(key);
+    std::string strFilePlainText;
+    encoder.Decode(strFileContent, strFilePlainText);
+
+
+    // 7 - Conversion du contenu de userfile en objet JSON
+    boost::json::array arrUserInfo;
     try
     {
-        arrUserInfo = boost::json::parse(strFileContent).as_array();
+        arrUserInfo = boost::json::parse(strFilePlainText).as_array();
     }
     catch(const std::exception& e)
     {
         return false;
     }
 
-    UserInfoParser parser;
 
+    // 8 - Chargement dans lstUserInfo
+    UserInfoParser parser;
     std::lock_guard lockUserInfo(m_mutUserInfo);
+    m_lstUserInfo.clear();
     parser.ConvertJsonArrayToUserInfo(arrUserInfo, m_lstUserInfo);
 
     return true;
@@ -52,6 +96,7 @@ bool DataPublicationManager::SaveUserInfoFile()
     boost::json::array arr;
     UserInfoParser parser;
 
+    // 1 - Conversion UserInfo -> objet JSON
     std::unique_lock lockUserInfo(m_mutUserInfo);
     parser.ConvertUserInfoToJsonArray(m_lstUserInfo, arr);
     lockUserInfo.unlock();
@@ -70,40 +115,25 @@ bool DataPublicationManager::SaveUserInfoFile()
     std::string strEncoded;
     std::ifstream ifs(KeyFilename);
 
-    if(ifs.fail())
+    // 2 - Génération d'une clé
+    encoder.RegenKey();
+    const CryptoPP::SecByteBlock& key = encoder.GetKey();
+    std::ofstream ofsKey(KeyFilename);
+    if(ofsKey.fail())
     {
-        encoder.RegenKey();
-        const CryptoPP::SecByteBlock& key = encoder.GetKey();
-        std::ofstream ofsKey(KeyFilename);
-        if(ofsKey.fail())
-        {
-            return false;
-        }
-        ofsKey.write(reinterpret_cast<const char*>(key.BytePtr()), key.SizeInBytes());
-        if(ofsKey.fail())
-        {
-            return false;
-        }
+        return false;
     }
-    else
+    ofsKey.write(reinterpret_cast<const char*>(key.BytePtr()), key.SizeInBytes());
+    if(ofsKey.fail())
     {
-        CryptoPP::SecByteBlock key(CryptoPP::AES::DEFAULT_KEYLENGTH);
-        std::string strKey;
-        ifs >> strKey;
-        if(ifs.fail())
-        {
-            return false;
-        }
-        if(strKey.size() != CryptoPP::AES::DEFAULT_KEYLENGTH)
-        {
-            return false;
-        }
-        memcpy(key.BytePtr(), strKey.c_str(), CryptoPP::AES::DEFAULT_KEYLENGTH);
-        encoder.SetKey(key);
+        return false;
     }
 
+    // 3 - Génération nouvel IV + AES
     encoder.RegenIv();
     encoder.Encode(strUserInfo, strEncoded);
+
+
     ofs << strEncoded;
 
     const CryptoPP::SecByteBlock& iv = encoder.GetIv();
