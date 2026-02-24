@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     g++ \
     libboost-all-dev \
     libcrypto++-dev \
+    libssl-dev \
     cmake \
     git \
     gdb \
