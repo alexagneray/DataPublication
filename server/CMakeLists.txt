@@ -38,6 +38,5 @@ target_compile_definitions(test_userinfo_parser PRIVATE "BOOST_TEST_DYN_LINK=1")
 target_link_libraries(test_userinfo_parser PRIVATE Boost::unit_test_framework Boost::json)
 add_test(NAME test_userinfo_parser COMMAND test_userinfo_parser)
 
-if(EXISTS network)
-    add_subdirectory(network)
-endif()
+
+add_subdirectory(network)
