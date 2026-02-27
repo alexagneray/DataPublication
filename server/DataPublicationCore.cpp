@@ -168,3 +168,5 @@ DataPublicationCoreError DataPublicationCore::GetPublication(const std::string &
 
     return DataPublicationCoreError::Success;
 }
+
+DataPublicationCore DataPublicationCoreInstance;

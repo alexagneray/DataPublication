@@ -42,3 +42,6 @@ class DataPublicationCore
     DataPublicationCoreError GetPublication(const std::string& strSubscriber, std::map<std::string,std::map<std::string, VarType>>& publication) noexcept;
 
 };
+
+
+extern DataPublicationCore DataPublicationCoreInstance;
