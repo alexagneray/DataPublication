@@ -16,8 +16,9 @@ class DataPublicationSession
         bool IsConnected() const;
 
     public:
-        DataPublicationSession() : m_bAuthentified(false), m_bConnected(false) {}
+        DataPublicationSession();
         void AddQuery(const QueryPacket&& packet);
+        void AddHistory(const QueryPacketHistory&& history);
         std::optional<QueryPacket> GetNextQuery();
         int GetQueryHistorySize() const;
         int GetQueryQueueSize() const;
