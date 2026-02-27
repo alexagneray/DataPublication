@@ -15,5 +15,11 @@ target_include_directories(DataPublicationManager PUBLIC ${Boost_INCLUDE_DIRS} $
 target_compile_definitions(DataPublicationManager PUBLIC "BOOST_TEST_DYN_LINK=1")
 target_link_libraries(DataPublicationManager PUBLIC Boost::json ${CRYPTOPP_LIB})
 
+add_library(DataPublicationSession SHARED DataPublicationSession.cpp)
+target_include_directories(DataPublicationSession PUBLIC ${Boost_INCLUDE_DIRS} .)
+target_compile_definitions(DataPublicationSession PUBLIC "BOOST_TEST_DYN_LINK=1")
+target_link_libraries(DataPublicationSession)
+target_compile_definitions(DataPublicationSession PUBLIC VERBOSE)
+
 add_subdirectory(network)
 add_subdirectory(test)
