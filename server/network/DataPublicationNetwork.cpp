@@ -1,37 +1,57 @@
 #include "DataPublicationNetwork.h"
 #include <thread>
 #include <boost/asio.hpp>
-#include <boost/asio/ssl.hpp>
+
+#ifdef VERBOSE
+#include <iostream>
+#endif
 
 namespace asio = boost::asio;
 namespace ssl = asio::ssl;
 
 static std::unique_ptr<std::thread> s_pThreadListen;
 static std::unique_ptr<boost::asio::io_context> s_pIoContext;
-static std::unique_ptr<boost::asio::ssl::context> s_pSslContext;
 
-static void DataPublicationListen()
+static void DataPublicationClientHandler(asio::ip::tcp::socket socket)
+{
+    try {
+
+        char data[1024];
+        size_t length = socket.read_some(asio::buffer(data));
+
+        #ifdef VERBOSE
+        std::cout << "Received data: " << std::string(data, length) << std::endl;
+        #endif 
+        
+        std::string response = "Data received";
+        asio::write(socket, asio::buffer(response));
+    }
+    catch (std::exception& e) {
+        return;
+    }
+}
+
+static void DataPublicationListen(int nPort)
 {
     s_pIoContext = std::make_unique<boost::asio::io_context>();
 
-    // Configuration SSL (certificat + clé privée)
-    s_pSslContext = std::make_unique<ssl::context>(ssl::context::tls_server);
-    s_pSslContext->use_certificate_file("server.crt", ssl::context::pem);
-    s_pSslContext->use_private_key_file("server.key", ssl::context::pem);
-
-    // Accepte les connexions sur le port 8080
-    asio::ip::tcp::acceptor acceptor(*s_pIoContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), 8080));
+    asio::ip::tcp::acceptor acceptor(*s_pIoContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), nPort));
 
     while (true) {
         asio::ip::tcp::socket socket(*s_pIoContext);
         acceptor.accept(socket);
 
-        // Crée une socket SSL à partir de la socket TCP
-        ssl::stream<asio::ip::tcp::socket> ssl_socket(std::move(socket), *s_pSslContext);
+        #ifdef VERBOSE
+        std::cout << "Client connected: " << socket.remote_endpoint() << std::endl;
+        #endif
+
+        std::thread(DataPublicationClientHandler, std::move(socket)).detach();
     }
 }
 
-void DataPublicationNetwork::Listen()
+
+
+void DataPublicationNetwork::Listen(int nPort)
 {
-    std::thread(Listen).detach();
+    std::thread(DataPublicationListen, nPort).detach();
 }

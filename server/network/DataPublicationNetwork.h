@@ -10,5 +10,5 @@ class DataPublicationNetwork
      * Fonction non bloquante, 
      * initialisation du thread d'écoute.
      */
-    static void Listen();
+    static void Listen(int nPort);
 };
