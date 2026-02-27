@@ -2,79 +2,79 @@
 
 #include <vector>
 
-DataPublicationError DataPublicationCore::AddDataList(const std::string &strPublisher, const std::string &strDlName) noexcept
+DataPublicationCoreError DataPublicationCore::AddDataList(const std::string &strPublisher, const std::string &strDlName) noexcept
 {
     auto it = m_dlData.find(strDlName);
     
     if(it != m_dlData.end())
     {
-        return DataPublicationError::AlreadyExists;
+        return DataPublicationCoreError::AlreadyExists;
     }
     
     auto retData = m_dlData.emplace(std::make_pair(strDlName, std::map<std::string, VarType>()));
 
     if(!retData.second)
     {
-        return DataPublicationError::AddingIssue;
+        return DataPublicationCoreError::AddingIssue;
     }
 
     auto retInfo = m_dlInfo.emplace(std::make_pair(strDlName, Info()));
 
     if(!retInfo.second)
     {
-        return DataPublicationError::AddingIssue;
+        return DataPublicationCoreError::AddingIssue;
     }
 
     Info& info = (retInfo.first)->second;
     info._setPublishers.insert(strPublisher);
 
-    return DataPublicationError::Success;
+    return DataPublicationCoreError::Success;
 }
 
-DataPublicationError DataPublicationCore::RemoveDataList(const std::string &strDlName) noexcept
+DataPublicationCoreError DataPublicationCore::RemoveDataList(const std::string &strDlName) noexcept
 {
     auto it = m_dlData.find(strDlName);
 
     if(it == m_dlData.end())
     {
-        return DataPublicationError::NotFound;
+        return DataPublicationCoreError::NotFound;
     }
 
     m_dlData.erase(it);
 
-    return DataPublicationError::Success;
+    return DataPublicationCoreError::Success;
 }
 
-DataPublicationError DataPublicationCore::AddDataToList(const std::string &strDlName, const std::string &strDataName, const VarType &data) noexcept
+DataPublicationCoreError DataPublicationCore::AddDataToList(const std::string &strDlName, const std::string &strDataName, const VarType &data) noexcept
 {
     auto it = m_dlData.find(strDlName);
     if(it == m_dlData.end())
     {
-        return DataPublicationError::NotFound;
+        return DataPublicationCoreError::NotFound;
     }
 
     std::map<std::string, VarType>& dl = it->second;
     auto itData = dl.find(strDataName);
     if(itData != dl.end())
     {
-        return DataPublicationError::AlreadyExists;
+        return DataPublicationCoreError::AlreadyExists;
     }
 
     auto newElement = dl.emplace(std::make_pair(strDataName, data));
     if(!newElement.second)
     {
-        return DataPublicationError::AddingIssue;
+        return DataPublicationCoreError::AddingIssue;
     }
 
-    return DataPublicationError::Success;
+    return DataPublicationCoreError::Success;
 }
 
-DataPublicationError DataPublicationCore::RemoveDataFromList(const std::string &strDlName, const std::string &strDataName) noexcept
+DataPublicationCoreError DataPublicationCore::RemoveDataFromList(const std::string &strDlName, const std::string &strDataName) noexcept
 {
     auto it = m_dlData.find(strDlName);
     if(it == m_dlData.end())
     {
-        return DataPublicationError::NotFound;
+        return DataPublicationCoreError::NotFound;
     }
 
     std::map<std::string, VarType>& dataMap = it->second;
@@ -82,41 +82,41 @@ DataPublicationError DataPublicationCore::RemoveDataFromList(const std::string &
     auto itData = dataMap.find(strDataName);
     if(itData == dataMap.end())
     {
-        return DataPublicationError::NotFound;
+        return DataPublicationCoreError::NotFound;
     }
 
     dataMap.erase(itData);
 
-    return DataPublicationError::Success;
+    return DataPublicationCoreError::Success;
 }
 
-DataPublicationError DataPublicationCore::UpdateData(const std::string &strDlName, const std::string &strDataName, const VarType &newData) noexcept
+DataPublicationCoreError DataPublicationCore::UpdateData(const std::string &strDlName, const std::string &strDataName, const VarType &newData) noexcept
 {
     auto it = m_dlData.find(strDlName);
     if(it == m_dlData.end())
     {
-        return DataPublicationError::NotFound;
+        return DataPublicationCoreError::NotFound;
     }
 
     std::map<std::string, VarType>& mapData = it->second;
     auto itData = mapData.find(strDataName);
     if(itData == mapData.end())
     {
-        return DataPublicationError::NotFound;
+        return DataPublicationCoreError::NotFound;
     }
 
     VarType& data = itData->second;
     data = newData;
 
-    return DataPublicationError::Success;
+    return DataPublicationCoreError::Success;
 }
 
-DataPublicationError DataPublicationCore::Subscribe(const std::string &strSubscriber, const std::string &strDlName) noexcept
+DataPublicationCoreError DataPublicationCore::Subscribe(const std::string &strSubscriber, const std::string &strDlName) noexcept
 {
     auto it = m_dlInfo.find(strDlName);
     if(it == m_dlInfo.end())
     {
-        return DataPublicationError::NotFound;
+        return DataPublicationCoreError::NotFound;
     }
 
     Info& info = it->second;
@@ -124,18 +124,18 @@ DataPublicationError DataPublicationCore::Subscribe(const std::string &strSubscr
 
     if(!ret.second)
     {
-        return DataPublicationError::AlreadyExists;
+        return DataPublicationCoreError::AlreadyExists;
     }
 
-    return DataPublicationError::Success;
+    return DataPublicationCoreError::Success;
 }
 
-DataPublicationError DataPublicationCore::Unsubscribe(const std::string &strSubscriber, const std::string &strDlName) noexcept
+DataPublicationCoreError DataPublicationCore::Unsubscribe(const std::string &strSubscriber, const std::string &strDlName) noexcept
 {
     auto it = m_dlInfo.find(strDlName);
     if(it == m_dlInfo.end())
     {
-        return DataPublicationError::NotFound;
+        return DataPublicationCoreError::NotFound;
     }
 
     Info& info = it->second;
@@ -143,13 +143,13 @@ DataPublicationError DataPublicationCore::Unsubscribe(const std::string &strSubs
     size_t ret = info._setSubscribers.erase(strSubscriber);
     if(!ret)
     {
-        return DataPublicationError::NotFound;
+        return DataPublicationCoreError::NotFound;
     }
 
-    return DataPublicationError::Success;
+    return DataPublicationCoreError::Success;
 }
 
-DataPublicationError DataPublicationCore::GetPublication(const std::string &strSubscriber, std::map<std::string, std::map<std::string, VarType>> &publication) noexcept
+DataPublicationCoreError DataPublicationCore::GetPublication(const std::string &strSubscriber, std::map<std::string, std::map<std::string, VarType>> &publication) noexcept
 {
     std::vector<std::string> vecSubscriptions;
 
@@ -166,5 +166,5 @@ DataPublicationError DataPublicationCore::GetPublication(const std::string &strS
         publication.emplace(std::make_pair(dlName, std::map<std::string, VarType>(m_dlData.at(dlName))));
     }
 
-    return DataPublicationError::Success;
+    return DataPublicationCoreError::Success;
 }

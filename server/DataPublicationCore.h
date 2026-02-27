@@ -5,7 +5,7 @@
 
 
 
-enum class DataPublicationError
+enum class DataPublicationCoreError
 {
     Success,
     AlreadyExists,
@@ -29,16 +29,16 @@ class DataPublicationCore
     std::map<std::string, Info> m_dlInfo;
 
     public:
-    DataPublicationError AddDataList(const std::string& strPublisher, const std::string& strDlName) noexcept;
-    DataPublicationError RemoveDataList(const std::string& strDlName) noexcept;
+    DataPublicationCoreError AddDataList(const std::string& strPublisher, const std::string& strDlName) noexcept;
+    DataPublicationCoreError RemoveDataList(const std::string& strDlName) noexcept;
 
-    DataPublicationError AddDataToList(const std::string& strDlName, const std::string& strDataName, const VarType& data) noexcept;
-    DataPublicationError RemoveDataFromList(const std::string& strDlName, const std::string& strDataName) noexcept;
+    DataPublicationCoreError AddDataToList(const std::string& strDlName, const std::string& strDataName, const VarType& data) noexcept;
+    DataPublicationCoreError RemoveDataFromList(const std::string& strDlName, const std::string& strDataName) noexcept;
 
-    DataPublicationError UpdateData(const std::string& strDlName, const std::string& strDataName, const VarType& newData) noexcept;
-    DataPublicationError Subscribe(const std::string& strSubscriber, const std::string& strDlName) noexcept;
-    DataPublicationError Unsubscribe(const std::string& strSubscriber, const std::string& strDlName) noexcept;
+    DataPublicationCoreError UpdateData(const std::string& strDlName, const std::string& strDataName, const VarType& newData) noexcept;
+    DataPublicationCoreError Subscribe(const std::string& strSubscriber, const std::string& strDlName) noexcept;
+    DataPublicationCoreError Unsubscribe(const std::string& strSubscriber, const std::string& strDlName) noexcept;
 
-    DataPublicationError GetPublication(const std::string& strSubscriber, std::map<std::string,std::map<std::string, VarType>>& publication) noexcept;
+    DataPublicationCoreError GetPublication(const std::string& strSubscriber, std::map<std::string,std::map<std::string, VarType>>& publication) noexcept;
 
 };
