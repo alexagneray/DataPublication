@@ -7,7 +7,7 @@
 #endif
 
 namespace asio = boost::asio;
-namespace ssl = asio::ssl;
+// namespace ssl = asio::ssl;
 
 static std::unique_ptr<std::thread> s_pThreadListen;
 static std::unique_ptr<boost::asio::io_context> s_pIoContext;
@@ -23,7 +23,7 @@ static void DataPublicationClientHandler(asio::ip::tcp::socket socket)
         std::cout << "Received data: " << std::string(data, length) << std::endl;
         #endif 
         
-        std::string response = "Data received";
+        std::string response = "ACK";
         asio::write(socket, asio::buffer(response));
     }
     catch (std::exception& e) {
