@@ -1,5 +1,3 @@
-#include <DataPublicationCore.h>
-#include <DataPublication.h>
 #include <string>
 
 class DataPublicationAction
@@ -11,8 +9,5 @@ class DataPublicationAction
 
 class DataPublicationActionPublish : public DataPublicationAction
 {   
-    void Execute() override
-    {
-        DataPublicationCoreInstance.AddDataList("Publisher1", "DataList1");
-    }
+    void Execute() override;
 };
