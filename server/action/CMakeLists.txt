@@ -1,4 +1,4 @@
-add_library(DataPublicationActor SHARED DataPublicationActor.cpp)
+add_library(DataPublicationActor SHARED DataPublicationActor.cpp ExecutionEngine.cpp)
 target_include_directories(DataPublicationActor PUBLIC ..)
 target_compile_definitions(DataPublicationActor PUBLIC "BOOST_TEST_DYN_LINK=1")
 target_link_libraries(DataPublicationActor DataPublicationSession)
