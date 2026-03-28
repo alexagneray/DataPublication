@@ -205,6 +205,28 @@ DataPublicationManagerError DataPublicationManager::UpdatePassword(const std::st
     return DataPublicationManagerError::Success;
 }
 
+bool DataPublicationManager::UserExists(const std::string &name) noexcept
+{
+    std::lock_guard lockUserInfo(m_mutUserInfo);
+    auto it = std::find_if(m_lstUserInfo.begin(),
+                m_lstUserInfo.end(),
+                [&name](UserInfo& info) {return info._name==name;});
+    return it != m_lstUserInfo.end();
+}
+
+bool DataPublicationManager::CheckPassword(const std::string &name, const std::string &passwd) noexcept
+{
+    std::lock_guard lockUserInfo(m_mutUserInfo);
+    auto it = std::find_if(m_lstUserInfo.begin(),
+                m_lstUserInfo.end(),
+                [&name](UserInfo& info) {return info._name==name;});
+    if(it == m_lstUserInfo.end())
+    {
+        return false;
+    }
+    return it->_passwd == passwd;
+}
+
 void DataPublicationManager::Run() noexcept
 {
     LoadUserInfoFile();

@@ -37,5 +37,7 @@ public:
     DataPublicationManagerError AddUser(const std::string& name, const std::string& passwd) noexcept;
     DataPublicationManagerError RemoveUser(const std::string& name) noexcept;
     DataPublicationManagerError UpdatePassword(const std::string& name, const std::string& passwd) noexcept;
+    bool UserExists(const std::string& name) noexcept;
+    bool CheckPassword(const std::string& name, const std::string& passwd) noexcept;
     void Run() noexcept;
 };
