@@ -1,0 +1,4 @@
+add_library(DataPublicationCore SHARED DataPublicationCore.cpp)
+target_include_directories(DataPublicationCore PUBLIC ${Boost_INCLUDE_DIRS})
+target_compile_definitions(DataPublicationCore PUBLIC "BOOST_TEST_DYN_LINK=1")
+target_link_libraries(DataPublicationCore PUBLIC Boost::json)
