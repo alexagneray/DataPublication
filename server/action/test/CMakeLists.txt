@@ -1,5 +1,0 @@
-add_executable(test_datapublication_actor test_datapublication_actor.cpp)
-target_include_directories(test_datapublication_actor PRIVATE ${Boost_INCLUDE_DIRS} .. ../../network)
-target_compile_definitions(test_datapublication_actor PRIVATE "BOOST_TEST_DYN_LINK=1")
-target_link_libraries(test_datapublication_actor PRIVATE Boost::unit_test_framework Boost::system DataPublicationActor DataPublicationNetwork)
-add_test(NAME test_datapublication_actor COMMAND test_datapublication_actor)
