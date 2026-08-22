@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(transdata)
+project(DataPublication)
 enable_testing()
 
 set(CMAKE_CXX_STANDARD 23)
@@ -15,3 +15,5 @@ add_subdirectory(server)
 if(EXISTS tmp)
   add_subdirectory(tmp)
 endif()
+
+add_subdirectory(lib)

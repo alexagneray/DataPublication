@@ -3,6 +3,7 @@
 #include <cryptopp/sha.h>
 #include <cryptopp/hex.h>
 #include <cryptopp/filters.h>
+#include <QueryManager.h>
 
 const int MAX_HISTORY_SIZE = 100;
 
@@ -20,7 +21,8 @@ Session::Session(const std::string& strUser) :
     m_strUniqueHash(strUser),
     m_bAuthentified(false),
     m_bConnected(false),
-    m_QueryHistory(MAX_HISTORY_SIZE)
+    m_QueryHistory(MAX_HISTORY_SIZE),
+    m_strUser(strUser)
 {
     std::stringstream ss;
     ss << strUser << std::chrono::system_clock::now().time_since_epoch().count();
@@ -38,7 +40,11 @@ Session::Session(const std::string& strUser) :
 
 void Session::AddQuery(const QueryPacket &&packet)
 {
-    m_QueryQueue.push(std::make_shared<QueryPacket>(std::move(packet)));
+    m_QueryQueue.push({
+        std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()),
+        std::make_shared<QueryPacket>(std::move(packet))
+    });
+    QueryManagerInstance.EnqueueQuery(m_QueryQueue.back()->packet, m_strUser);
 }
 
 void Session::AddHistory(const QueryPacketHistory &&history)

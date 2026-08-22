@@ -6,6 +6,7 @@
 #include <chrono>
 #include <optional>
 #include <string>
+#include <map>
 
 enum class SessionError
 {
@@ -21,10 +22,12 @@ enum class SessionError
  */
 class Session
 {
-    std::queue<std::shared_ptr<QueryPacket>> m_QueryQueue;
+    std::queue<std::shared_ptr<QueryPacketTimed>> m_QueryQueue;
     boost::circular_buffer<QueryPacketHistory> m_QueryHistory;
+    std::map<time_t, std::weak_ptr<QueryResponse>> m_lstResponses;
     private:
-        std::string m_strUniqueHash; 
+        std::string m_strUniqueHash; //unused
+        std::string m_strUser; 
         bool m_bAuthentified;
         bool m_bConnected;
         bool IsAuthentified() const;

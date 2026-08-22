@@ -25,9 +25,9 @@ struct QueryPacket
     boost::json::object payload;
 };
 
-struct QueryPacketWithSession
+struct QueryPacketTimed
 {
-    std::string sessionId;
+    time_t ts;
     QueryPacket packet;
 };
 
