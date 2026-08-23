@@ -1,5 +1,6 @@
 add_library(libdata
     data.c
+    value.c
 )
 
 add_subdirectory(test)

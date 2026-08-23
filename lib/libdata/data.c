@@ -7,7 +7,7 @@
 typedef struct data_s 
 {
     char           label[DATA_LABEL_LEN]; /**< Label of the data. */
-    data_variant_t var;                   /**< Variant containing the data value. */
+    data_value_t   val;                   /**< Value of the data. */
 } data_t;
 
 /**
@@ -84,7 +84,7 @@ data_ret_t _get_const_data_group_node(const char *group_label, const data_group_
         g = g_next;
     }
 
-    return DATA_RET_DATA_NOT_FOUND;
+    return DATA_RET_GROUP_NOT_FOUND;
 }
 
 /**
@@ -165,11 +165,16 @@ data_ret_t lib_data_destroy()
 
 data_ret_t add_group(const char *group_label)
 {
+    assert( group_label != NULL );
+
     return DATA_RET_OK;
 }
 
 data_ret_t add_data_to_group(char *group_label, const char *label, data_value_t *val)
 {
+    assert( group_label != NULL );
+    assert( label != NULL );
+
     return DATA_RET_OK;
 }
 
